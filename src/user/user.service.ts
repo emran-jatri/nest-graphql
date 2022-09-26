@@ -1,41 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { v4 as uuidv4 } from 'uuid';
+import { UserDocument, User } from './schemas/user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
 
-	id = 1
-	users = []
+	constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-	create(createUserInput: CreateUserInput) {
-		console.log("🚀 ~ file: user.service.ts ~ line 12 ~ UserService ~ create ~ create")
-		const user = {...createUserInput, id: this.id++}
-    console.log("🚀 ~ file: user.service.ts ~ line 15 ~ UserService ~ create ~ user", user)
-		this.users.push(user);
+	async create(createUserInput: CreateUserInput) {
+		const user = await this.userModel.create(createUserInput)
     return user;
   }
 
-	findAll() {
-		console.log("🚀 ~ file: user.service.ts ~ line 18 ~ UserService ~ findAll ~ findAll")
-    return this.users;
+	async findAll() {
+		const users = await this.userModel.find().exec();
+		return users
   }
 
-  findOne(id: number) {
-    console.log("🚀 ~ file: user.service.ts ~ line 23 ~ UserService ~ findOne ~ findOne")
-    return this.users.find(item => item.id === id);
+  async findOne(id: string) {
+		const user = await this.userModel.findOne({ _id: id }).exec();
+		return user
   }
 
-	update(updateUserInput: UpdateUserInput) {
-		console.log("🚀 ~ file: user.service.ts ~ line 28 ~ UserService ~ update ~ update")
-		let user = this.findOne(updateUserInput.id)
-		user.exampleField = updateUserInput.exampleField
+	async update(updateUserInput: UpdateUserInput) {
+		const user = await this.userModel.findOneAndUpdate({ _id: updateUserInput.id }, {name: updateUserInput.name}, {new: true, runValidators: true})
     return user;
   }
 
-	remove(id: number) {
-		console.log("🚀 ~ file: user.service.ts ~ line 36 ~ UserService ~ remove ~ remove")
-		this.users = this.users.filter(item => item.id !== id);
-		return id + " is deleted";
+	async remove(id: string) {
+		const user = await this.userModel.findOneAndDelete({ _id: id })
+		return user;
   }
 }

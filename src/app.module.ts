@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { PostModule } from './post/post.module';
 
 @Module({
 	imports: [
@@ -48,7 +49,8 @@ import { UserModule } from './user/user.module';
       //   return graphQLFormattedError;
       // },
     }),
-		UserModule
+		UserModule,
+		PostModule
 	],
   controllers: [AppController],
   providers: [AppService],
