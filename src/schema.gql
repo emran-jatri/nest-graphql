@@ -21,8 +21,9 @@ type Mutation {
 }
 
 type Post {
+  _id: String!
   content: String!
-  user: ID!
+  user: User!
 }
 
 type Query {
@@ -44,6 +45,6 @@ input UpdateUserInput {
 }
 
 type User {
-  id: ID!
+  _id: String!
   name: String!
 }

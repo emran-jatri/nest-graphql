@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { v4 as uuidv4 } from 'uuid';
-import { PostDocument, Post } from './schemas/post.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Post, PostDocument } from './entities/post.entity';
 
 @Injectable()
 export class PostService {
@@ -12,13 +12,12 @@ export class PostService {
 	constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
 
 	async create(createPostInput: CreatePostInput) {
-		console.log("🚀 ~ file: post.service.ts ~ line 15 ~ PostService ~ create ~ createPostInput", createPostInput)
-		const post = await this.postModel.create(createPostInput)
-    return post;
+		const post = await this.postModel.create(createPostInput);
+    return post.populate("user");
   }
 
 	async findAll() {
-		const posts = await this.postModel.find().exec();
+		const posts = await this.postModel.find().populate("user").exec();
 		return posts
   }
 

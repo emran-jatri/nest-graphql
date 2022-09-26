@@ -3,7 +3,7 @@ import { PostService } from './post.service';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { NotFoundException } from '@nestjs/common';
-import { Post } from './schemas/post.schema';
+import { Post } from './entities/post.entity';
 
 @Resolver(() => Post)
 export class PostResolver {
