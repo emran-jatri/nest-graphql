@@ -15,7 +15,7 @@ export class Post {
 	@Field()
 	content: string;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', autopopulate: true })
 	@Field()
 	user: User;
 

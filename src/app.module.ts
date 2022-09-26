@@ -10,7 +10,12 @@ import { PostModule } from './post/post.module';
 
 @Module({
 	imports: [
-		MongooseModule.forRoot('mongodb://localhost/nest-graphql'),
+		MongooseModule.forRoot('mongodb://localhost/nest-graphql', {
+      connectionFactory: (connection) => {
+        connection.plugin(require('mongoose-autopopulate'));
+        return connection;
+      }
+    }),
 		GraphQLModule.forRoot<ApolloDriverConfig>({
 			driver: ApolloDriver,
 			autoSchemaFile: join(process.cwd(), 'src/schema.gql'),

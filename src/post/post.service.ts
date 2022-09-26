@@ -13,11 +13,11 @@ export class PostService {
 
 	async create(createPostInput: CreatePostInput) {
 		const post = await this.postModel.create(createPostInput);
-    return post.populate("user");
+    return post
   }
 
 	async findAll() {
-		const posts = await this.postModel.find().populate("user").exec();
+		const posts = await this.postModel.find().exec();
 		return posts
   }
 
