@@ -26,8 +26,22 @@ type Post {
   user: User!
 }
 
+type PostPaginate {
+  docs: [Post!]!
+  hasNextPage: Boolean!
+  hasPrevPage: Boolean!
+  limit: Float!
+  nextPage: Boolean!
+  page: Float!
+  pagingCounter: Float!
+  prevPage: Float
+  totalDocs: Float!
+  totalPages: Float!
+}
+
 type Query {
   post(id: String!): Post!
+  postPaginateAll: PostPaginate!
   posts: [Post!]!
   user(id: String!): User!
   users: [User!]!

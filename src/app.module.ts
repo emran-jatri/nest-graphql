@@ -7,12 +7,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
+import * as mongoosePaginate from 'mongoose-paginate-v2';
+
 
 @Module({
 	imports: [
 		MongooseModule.forRoot('mongodb://localhost/nest-graphql', {
       connectionFactory: (connection) => {
         connection.plugin(require('mongoose-autopopulate'));
+        connection.plugin(mongoosePaginate);
         return connection;
       }
     }),

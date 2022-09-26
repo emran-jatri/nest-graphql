@@ -4,6 +4,7 @@ import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { NotFoundException } from '@nestjs/common';
 import { Post } from './entities/post.entity';
+import { PostPaginate } from './entities/post-paginate.entity';
 
 @Resolver(() => Post)
 export class PostResolver {
@@ -16,7 +17,14 @@ export class PostResolver {
 
   @Query(() => [Post], { name: 'posts' })
   async findAll() {
-    return await this.postService.findAll();
+		const posts = await this.postService.findAll();
+		return posts
+	}
+	
+  @Query(() => PostPaginate, { name: 'postPaginateAll' })
+  async paginateAll() {
+		const posts = await this.postService.paginateAll();
+		return posts
   }
 
   @Query(() => Post, { name: 'post' })
