@@ -31,6 +31,7 @@ type PostPaginate {
   hasNextPage: Boolean!
   hasPrevPage: Boolean!
   limit: Float!
+  message: String!
   nextPage: Boolean!
   page: Float!
   pagingCounter: Float!

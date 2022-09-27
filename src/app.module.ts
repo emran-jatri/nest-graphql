@@ -14,7 +14,7 @@ import * as mongoosePaginate from 'mongoose-paginate-v2';
 	imports: [
 		MongooseModule.forRoot('mongodb://localhost/nest-graphql', {
       connectionFactory: (connection) => {
-        connection.plugin(require('mongoose-autopopulate'));
+				connection.plugin(require('mongoose-autopopulate'));
         connection.plugin(mongoosePaginate);
         return connection;
       }
@@ -24,11 +24,17 @@ import * as mongoosePaginate from 'mongoose-paginate-v2';
 			autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
 			sortSchema: true,
 			formatResponse(response, requestContext) {
+				let operationName = ""
+				if (requestContext.request.query.startsWith("mutation")) {
+					operationName = requestContext.request.query.split(/[{}()]/gmi)[1].trim()
+				} else {
+					operationName = requestContext.request.query.split("{")[1].trim()
+				}
+				
 				let message = "SUCCESS"
 				let statusCode = 200
 
 				if (response?.errors) {
-					// console.log("🚀 ~ file: app.module.ts ~ line 23 ~ formatResponse ~ response?.errors", response?.errors)
 					// @ts-ignore
 					message = response.errors[0]?.extensions?.response?.message || response.errors[0]?.message || "ERROR"
 					// @ts-ignore
@@ -36,18 +42,16 @@ import * as mongoosePaginate from 'mongoose-paginate-v2';
 					response.errors = undefined
 				}
 
-				// console.log("🚀 ~ file: app.module.ts ~ line 31 ~ formatResponse ~ response.data", response.data)
+				if (statusCode === 200 && response.data[operationName]?.message) {
+					message = response.data[operationName]?.message
+					delete response.data[operationName]?.message
+				}
+
 				response.data = {
 					message,
 					statusCode,
-					...response.data,
+					result: statusCode === 200 ? response.data[operationName] : response.data,
 				}
-				// response.extensions = {...response.extensions, test2: 'Property to test if shown in the FrontEnd'}
-				// let responseData = {
-				// 	...response,
-				// 	test: 'Property to test if shown in the FrontEnd',
-				// }
-				// console.log("🚀 ~ file: app.module.ts ~ line 19 ~ formatResponse ~ responseData", responseData)
      		return response
 			},
 			// formatError: (error: GraphQLError) => {

@@ -4,6 +4,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
+import successResponse from 'src/common/successResponse';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -16,7 +17,8 @@ export class UserResolver {
 
   @Query(() => [User], { name: 'users' })
   async findAll() {
-    return await this.userService.findAll();
+		const users = await this.userService.findAll();
+		return users
   }
 
   @Query(() => User, { name: 'user' })

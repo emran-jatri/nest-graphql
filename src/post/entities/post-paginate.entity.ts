@@ -3,6 +3,9 @@ import { Post } from "./post.entity";
 
 @ObjectType()
 export class PostPaginate{
+	@Field()
+	message: string;
+		
 	@Field(() => [Post])
 	docs: Post
 

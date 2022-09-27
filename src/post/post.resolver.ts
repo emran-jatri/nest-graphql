@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { PostService } from './post.service';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
@@ -22,9 +22,10 @@ export class PostResolver {
 	}
 	
   @Query(() => PostPaginate, { name: 'postPaginateAll' })
-  async paginateAll() {
+	async paginateAll(@Context() cnt) {
+		// console.log('paginateAll', cnt.body);
 		const posts = await this.postService.paginateAll();
-		return posts
+		return { ...posts, message: "PostService.paginateAll() returned posts" }
   }
 
   @Query(() => Post, { name: 'post' })
