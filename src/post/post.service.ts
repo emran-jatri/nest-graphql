@@ -21,7 +21,7 @@ export class PostService {
 		return posts
 	}
 	
-	async paginateAll() {
+	async paginate() {
 		const posts = await this.postModel.paginate({},{ page: 1, limit: 2 });
 		return posts
   }

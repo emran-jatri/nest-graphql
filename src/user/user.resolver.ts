@@ -4,7 +4,6 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import successResponse from 'src/common/successResponse';
 
 @Resolver(() => User)
 export class UserResolver {

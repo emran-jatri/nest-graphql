@@ -1,10 +1,10 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
-import { PostService } from './post.service';
+import { NotFoundException } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import successResponse from 'src/common/successResponse';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
-import { NotFoundException } from '@nestjs/common';
-import { Post } from './entities/post.entity';
-import { PostPaginate } from './entities/post-paginate.entity';
+import { Post, PostPaginate } from './entities';
+import { PostService } from './post.service';
 
 @Resolver(() => Post)
 export class PostResolver {
@@ -12,7 +12,8 @@ export class PostResolver {
 
   @Mutation(() => Post)
   async createPost(@Args('createPostInput') createPostInput: CreatePostInput) {
-    return await this.postService.create(createPostInput);
+		const post = await this.postService.create(createPostInput);
+		return post
   }
 
   @Query(() => [Post], { name: 'posts' })
@@ -21,22 +22,24 @@ export class PostResolver {
 		return posts
 	}
 	
-  @Query(() => PostPaginate, { name: 'postPaginateAll' })
-	async paginateAll(@Context() cnt) {
+  @Query(() => PostPaginate, { name: 'postPaginate' })
+	async paginate(@Context() cnt) {
 		// console.log('paginateAll', cnt.body);
-		const posts = await this.postService.paginateAll();
-		return { ...posts, message: "PostService.paginateAll() returned posts" }
+		const posts = await this.postService.paginate();
+		return posts
   }
 
   @Query(() => Post, { name: 'post' })
 	async findOne(@Args('id') id: string) {
 		const post = await this.postService.findOne(id)
-
+		// console.log("🚀 ~ file: post.resolver.ts ~ line 34 ~ PostResolver ~ findOne ~ post", post)
+		
 		if (!post) {
 			throw new NotFoundException("Post not found!")
 		}
 		
-		return post;
+		return { statusCode: 201,...post.toObject(), message: "1 Post Fount"};
+		// return post;
   }
 
   @Mutation(() => Post)

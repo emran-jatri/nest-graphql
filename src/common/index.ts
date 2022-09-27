@@ -1,1 +1,1 @@
-export * as successResponse from "./successResponse"
+export * from "./successResponse"

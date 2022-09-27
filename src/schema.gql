@@ -23,6 +23,8 @@ type Mutation {
 type Post {
   _id: String!
   content: String!
+  message: String
+  statusCode: Float
   user: User!
 }
 
@@ -31,18 +33,19 @@ type PostPaginate {
   hasNextPage: Boolean!
   hasPrevPage: Boolean!
   limit: Float!
-  message: String!
+  message: String
   nextPage: Boolean!
   page: Float!
   pagingCounter: Float!
   prevPage: Float
+  statusCode: Float
   totalDocs: Float!
   totalPages: Float!
 }
 
 type Query {
   post(id: String!): Post!
-  postPaginateAll: PostPaginate!
+  postPaginate: PostPaginate!
   posts: [Post!]!
   user(id: String!): User!
   users: [User!]!
