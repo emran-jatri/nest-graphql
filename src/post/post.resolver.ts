@@ -1,9 +1,8 @@
 import { NotFoundException } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import successResponse from 'src/common/successResponse';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
-import { Post, PostPaginate } from './entities';
+import { Post, PostPaginate, PostQuery } from './entities';
 import { PostService } from './post.service';
 
 @Resolver(() => Post)
@@ -16,20 +15,21 @@ export class PostResolver {
 		return post
   }
 
-  @Query(() => [Post], { name: 'posts' })
+  @Query(() => PostQuery, { name: 'posts' })
   async findAll() {
 		const posts = await this.postService.findAll();
-		return posts
+		return { statusCode: 201, docs: posts, message: "1 Post Fount"};
+		// return posts
 	}
 	
-  @Query(() => PostPaginate, { name: 'postPaginate' })
+  @Query(() => PostQuery, { name: 'postPaginate' })
 	async paginate(@Context() cnt) {
 		// console.log('paginateAll', cnt.body);
 		const posts = await this.postService.paginate();
-		return posts
+		return { statusCode: 200, ...posts, message: "2 Post Fount"}
   }
 
-  @Query(() => Post, { name: 'post' })
+  @Query(() => PostQuery, { name: 'post' })
 	async findOne(@Args('id') id: string) {
 		const post = await this.postService.findOne(id)
 		// console.log("🚀 ~ file: post.resolver.ts ~ line 34 ~ PostResolver ~ findOne ~ post", post)
@@ -38,7 +38,7 @@ export class PostResolver {
 			throw new NotFoundException("Post not found!")
 		}
 		
-		return { statusCode: 201,...post.toObject(), message: "1 Post Fount"};
+		return { statusCode: 201, object: post , message: "1 Post Fount"};
 		// return post;
   }
 
