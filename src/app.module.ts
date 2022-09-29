@@ -56,7 +56,7 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 					delete response.data[operationName]?.statusCode
 				}
 
-				console.log('------------>', response.data);
+				// console.log('------------>', response.data);
 				
 				response.data = {
 					message,
