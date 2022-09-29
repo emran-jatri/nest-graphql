@@ -12,11 +12,11 @@ input CreateUserInput {
 }
 
 type Mutation {
-  createPost(createPostInput: CreatePostInput!): Post!
+  createPost(createPostInput: CreatePostInput!): PostQuery!
   createUser(createUserInput: CreateUserInput!): User!
-  removePost(id: String!): Post!
+  removePost(id: String!): PostQuery!
   removeUser(id: String!): User!
-  updatePost(updatePostInput: UpdatePostInput!): Post!
+  updatePost(updatePostInput: UpdatePostInput!): PostQuery!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
@@ -42,9 +42,14 @@ type PostQuery {
   totalPages: Float!
 }
 
+input PostQueryDTO {
+  limit: Float = 10
+  page: Float = 1
+}
+
 type Query {
   post(id: String!): PostQuery!
-  postPaginate: PostQuery!
+  postPaginate(queryInput: PostQueryDTO!): PostQuery!
   posts: PostQuery!
   user(id: String!): User!
   users: [User!]!

@@ -25,8 +25,8 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 			autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
 			sortSchema: true,
 			formatResponse(response, requestContext) {
+				
 				let operationName = ""
-				// console.log("🚀 ~ file: app.module.ts ~ line 32 ~ formatResponse ~ requestContext.request.query", requestContext.request)
 				if (requestContext.request.query.startsWith("mutation")) {
 					operationName = requestContext.request.query.split(/[{}()]/gmi)[1].trim()
 				} else {
@@ -40,7 +40,7 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 				let message = SUCCESS_MESSAGE
 				let statusCode = STATUS_CODE_200
 
-				if (response?.errors) {
+				if (response?.errors) {					
 					// @ts-ignore
 					message = response.errors[0]?.extensions?.response?.message || response.errors[0]?.message || ERROR_MESSAGE
 					// @ts-ignore
@@ -55,14 +55,12 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 					statusCode = response.data[operationName]?.statusCode || STATUS_CODE_200
 					delete response.data[operationName]?.statusCode
 				}
-
-				// console.log('------------>', response.data);
 				
 				response.data = {
 					message,
 					statusCode,
 					// result: message === SUCCESS_MESSAGE ? response.data[operationName] : response.data,
-					result: response.data[operationName]?.object || response.data[operationName],
+					result: response?.data?.operationName?.object || response?.data?.operationName || response?.data,
 				}
      		return response
 			},
