@@ -36,10 +36,10 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 				if (operationName.includes('(')) {
 					operationName = operationName.split('(')[0]
 				}
-
+				
 				let message = SUCCESS_MESSAGE
 				let statusCode = STATUS_CODE_200
-
+				
 				if (response?.errors) {					
 					// @ts-ignore
 					message = response.errors[0]?.extensions?.response?.message || response.errors[0]?.message || ERROR_MESSAGE
@@ -60,7 +60,7 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 					message,
 					statusCode,
 					// result: message === SUCCESS_MESSAGE ? response.data[operationName] : response.data,
-					result: response?.data?.operationName?.object || response?.data?.operationName || response?.data,
+					result: response?.data[operationName].object || response?.data[operationName] || response?.data,
 				}
      		return response
 			},
