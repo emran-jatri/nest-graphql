@@ -60,7 +60,7 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 					message,
 					statusCode,
 					// result: message === SUCCESS_MESSAGE ? response.data[operationName] : response.data,
-					result: response?.data[operationName].object || response?.data[operationName] || response?.data,
+					result: response?.data[operationName]?.object || response?.data[operationName] || response?.data,
 				}
      		return response
 			},
