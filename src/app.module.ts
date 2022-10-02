@@ -27,6 +27,10 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 			formatResponse(response, requestContext) {
 				
 				let operationName = ""
+				let message = SUCCESS_MESSAGE
+				let statusCode = STATUS_CODE_200
+				let result = null
+				
 				if (requestContext.request.query.startsWith("mutation")) {
 					operationName = requestContext.request.query.split(/[{}()]/gmi)[1].trim()
 				} else {
@@ -37,8 +41,6 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 					operationName = operationName.split('(')[0]
 				}
 				
-				let message = SUCCESS_MESSAGE
-				let statusCode = STATUS_CODE_200
 				
 				if (response?.errors) {					
 					// @ts-ignore
@@ -56,11 +58,12 @@ import { ERROR_MESSAGE, STATUS_CODE_200, STATUS_CODE_500, SUCCESS_MESSAGE } from
 					delete response.data[operationName]?.statusCode
 				}
 				
+				result = response?.data[operationName]?.object || response?.data[operationName] || response?.data || null,
+				
 				response.data = {
 					message,
 					statusCode,
-					// result: message === SUCCESS_MESSAGE ? response.data[operationName] : response.data,
-					result: response?.data[operationName]?.object || response?.data[operationName] || response?.data || null,
+					result
 				}
      		return response
 			},
