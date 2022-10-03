@@ -14,7 +14,7 @@ export class PostResolver {
   @Mutation(() => PostQuery)
   async createPost(@Args('createPostInput') createPostInput: CreatePostInput) {
 		const post = await this.postService.create(createPostInput);
-		return successResponse({ statusCode: 201, data: post, message: "1 Post Fount" });;
+		return successResponse({ statusCode: 201, data: post, message: "1 Post Fount" });
   }
 
   @Query(() => PostQuery, { name: 'posts' })

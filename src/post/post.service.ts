@@ -2,18 +2,42 @@ import { Injectable } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { v4 as uuidv4 } from 'uuid';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, PaginateModel } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model, PaginateModel } from 'mongoose';
 import { Post, PostDocument } from './entities/post.entity';
 
 @Injectable()
 export class PostService {
 
-	constructor(@InjectModel(Post.name) private postModel: PaginateModel<PostDocument>) {}
+	constructor(
+		@InjectModel(Post.name) private postModel: PaginateModel<PostDocument>,
+		@InjectConnection() private readonly connection: mongoose.Connection
+	) { }
 
 	async create(createPostInput: CreatePostInput) {
-		const post = await this.postModel.create(createPostInput);
-    return post
+		const session = await this.connection.startSession()
+		// let result = null
+		try {
+			session.startTransaction()
+			// const post = await this.postModel.create([createPostInput], { session });
+			// const post = await this.postModel.create(createPostInput);
+			const post = new this.postModel(createPostInput)
+			const newPost = await post.save({ session })
+			// console.log("🚀 ~ file: post.service.ts ~ line 18 ~ PostService ~ create ~ post", post)
+			// throw new Error(`Error creating post: ${createPostInput.content}`);
+			await session.commitTransaction();
+			// session.endSession()
+			// result = post
+			return newPost
+		} catch (error) {
+			console.log('error');
+			await session.abortTransaction();
+			// session.endSession()
+			throw error;
+		} finally {
+			session.endSession()
+		}
+			
   }
 
 	async findAll() {
